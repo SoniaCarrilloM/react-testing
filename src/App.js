@@ -37,11 +37,13 @@ const App = () => {
             type="password"
             name="confirm-password"
             className="form-control"
-            id="confirm-
-            password"
+            id="confirm-password"
             aria-describedby="passwordHelp"
           />
         </div>
+        <button type="submit" className="btn btn-primary">
+          Submit
+        </button>
         <h1>Registration Form</h1>
       </form>
     </div>
