@@ -38,13 +38,69 @@ test("should be able to type confirm password", () => {
 
 test("should show email error message on invalid email", () => {
   render(<App />);
+
   const emailErrorElement = screen.queryByText(
     /the email you wrote is invalid/i
   );
-  const emailInputElement = screen.getByRole("textbox", { name: /email/i });
-  const submitBtnElement = screen.getByRole("button", { name: /submit/i });
-  userEvent.type(emailInputElement, "invalid-email");
+  const emailInputElement = screen.getByRole("textbox", {
+    name: /email/i,
+  });
+  const submitBtnElement = screen.getByRole("button", {
+    name: /submit/i,
+  });
+
+  expect(emailErrorElement).not.toBeInTheDocument();
+
+  userEvent.type(emailInputElement, "selentagmail.com");
   userEvent.click(submitBtnElement);
-  expect(emailErrorElement).toBeInTheDocument();
+
+  const emailErrorElementAgain = screen.queryByText(
+    /the email you wrote is invalid/i
+  );
+  expect(emailErrorElementAgain).toBeInTheDocument();
 });
 
+test("should show password error if password is less than five characters", () => {
+  render(<App />);
+
+  const emailInputElement = screen.getByRole("textbox", {
+    name: /email/i,
+  });
+
+  const passwordInputElement = screen.getByLabelText("Password");
+  const passwordErrorElement = screen.queryByText(
+    /the password should be at least 6 characters long/i
+  );
+
+  userEvent.type(emailInputElement, "selena@gmail.com");
+
+  expect(passwordErrorElement).not.toBeInTheDocument();
+
+  userEvent.type(passwordInputElement, "123");
+  userEvent.click(submitBtnElement);
+
+  const submitBtnElement = screen.getByRole("button", {
+    name: /submit/i,
+  });
+
+  const passwordErrorElementAgain = screen.queryByText(
+    /the password should be at least 6 characters long/i
+  );
+  expect(passwordErrorElementAgain).toBeInTheDocument();
+});
+
+test("should show password error message on password mismatch", () => {
+  render(<App />);
+  const confirmPasswordInputElement = screen.getByLabelText("Confirm Password");
+  const passwordInputElement = screen.getByLabelText("Password");
+  const submitBtnElement = screen.getByRole("button", {
+    name: /submit/i,
+  });
+  userEvent.type(passwordInputElement, "password!");
+
+  userEvent.type(confirmPasswordInputElement, "password!!");
+  userEvent.click(submitBtnElement);
+  const passwordErrorElement = screen.queryByText(
+    /the passwords don't match. Try again./i
+  );
+});

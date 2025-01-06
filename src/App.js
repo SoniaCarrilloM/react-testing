@@ -1,7 +1,42 @@
 import React from "react";
+import { useState } from "react";
 import "./App.css";
+import validator from "validator";
 
-const App = () => {
+function App() {
+  const [signupInput, setSignInput] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setSignInput({
+      ...signupInput,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const [error, setError] = useState("");
+
+  //validate all of our inputs
+  const handleClick = () => {
+    e.preventDefault();
+    if (!validator.isEmail(signupInput.email)) {
+      return setError("The email you wrote is invalid");
+    }
+    if (signupInput.password.length < 6) {
+      return setError("The password should be at least 6 characters long");
+    }
+    if (signupInput.password !== signupInput.confirmPassword) {
+      return setError("The passwords don't match. Try again.");
+    }
+
+  
+  };
+
+
+
   return (
     <div className="container my-5">
       <form>
@@ -14,7 +49,8 @@ const App = () => {
             name="email"
             className="form-control"
             id="email"
-            aria-describedby="emailHelp"
+            value={signupInput.email}
+            onChange={handleChange}
           />
         </div>
         <div className="mb-3">
@@ -26,7 +62,8 @@ const App = () => {
             name="password"
             className="form-control"
             id="password"
-            aria-describedby="passwordHelp"
+            value={signupInput.password}
+            onChange={handleChange}
           />
         </div>
         <div className="mb-3">
@@ -35,19 +72,22 @@ const App = () => {
           </label>
           <input
             type="password"
-            name="confirm-password"
+            name="confirmPassword"
             className="form-control"
             id="confirm-password"
-            aria-describedby="passwordHelp"
+            value={signupInput.confirmPassword}
+            onChange={handleChange}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        {error && <p className="text-danger">{error}</p>}
+
+        <button type="submit" className="btn btn-primary" onClick={handleClick}>
           Submit
         </button>
         <h1>Registration Form</h1>
       </form>
     </div>
   );
-};
+}
 
 export default App;
